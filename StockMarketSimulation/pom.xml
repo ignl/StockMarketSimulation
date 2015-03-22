@@ -55,7 +55,7 @@
 	      <configuration>
 	        <archive>
 	          <manifest>
-	            <mainClass>fully.qualified.MainClass</mainClass>
+	            <mainClass>org.stockmarket.Main</mainClass>
 	          </manifest>
 	        </archive>
 	        <descriptorRefs>

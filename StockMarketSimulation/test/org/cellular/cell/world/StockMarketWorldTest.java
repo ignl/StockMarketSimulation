@@ -16,13 +16,13 @@ public class StockMarketWorldTest {
     public void getCandleTest() {
         StockMarketWorld world = new StockMarketWorld(10, 10, new StockMarketAutomatonRule());
         MarketParticipant marketParticipant = createNewMarketParticipant(world);
-        world.placeBid(marketParticipant, 1000, 497);
-        world.placeBid(marketParticipant, 900, 496);
-        world.placeBid(marketParticipant, 1200, 498);
+        world.placeBid(marketParticipant, 1000, 97);
+        world.placeBid(marketParticipant, 900, 96);
+        world.placeBid(marketParticipant, 1200, 98);
 
-        world.placeOffer(marketParticipant, 1000, 501);
-        world.placeOffer(marketParticipant, 1200, 503);
-        world.placeOffer(marketParticipant, 900, 502);
+        world.placeOffer(marketParticipant, 1000, 101);
+        world.placeOffer(marketParticipant, 1200, 103);
+        world.placeOffer(marketParticipant, 900, 102);
         
         world.buyMarket(marketParticipant, 900);
         world.buyMarket(marketParticipant, 900);
@@ -32,10 +32,10 @@ public class StockMarketWorldTest {
         
         
         Candle lastCandle = world.getLastCandle();
-        Assert.assertEquals(lastCandle.getOpen(), 500);
-        Assert.assertEquals(lastCandle.getHigh(), 503);
-        Assert.assertEquals(lastCandle.getLow()), 497);
-        Assert.assertEquals(lastCandle.getClose(), 497);
+        Assert.assertEquals(lastCandle.getOpen(), 100);
+        Assert.assertEquals(lastCandle.getHigh(), 103);
+        Assert.assertEquals(lastCandle.getLow(), 97);
+        Assert.assertEquals(lastCandle.getClose(), 97);
     }
     
     @Test

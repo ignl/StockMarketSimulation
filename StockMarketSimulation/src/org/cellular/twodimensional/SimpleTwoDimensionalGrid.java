@@ -16,7 +16,7 @@ import org.cellular.world.World;
 public abstract class SimpleTwoDimensionalGrid<T> implements World<T> {
 
 	/** Array of arrays which represents 2D grid of Cells. */
-	private Cell<T>[][] worldGrid = null;
+	protected Cell<T>[][] worldGrid = null;
 	
 	/** Grid height. */
 	private int height;

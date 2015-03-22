@@ -1,6 +1,7 @@
 package org.stockmarket;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -12,30 +13,35 @@ import org.cellular.twodimensional.SimpleTwoDimensionalGrid;
 import org.cellular.twodimensional.XYCoordinates;
 
 /**
+ * A {@link World} class that represents stock market exchange.
+ * 
  * @author Ignas
  *
  */
 public class StockMarketWorld extends SimpleTwoDimensionalGrid<Action> {
     
-    private static final int INITIAL_PRICE = 500;
+    private static final int INITIAL_PRICE = 100;
 
     private final StockExchangeLevel2Book level2;
 
-    private Candle lastCandle = new Candle(INITIAL_PRICE, INITIAL_PRICE, INITIAL_PRICE, INITIAL_PRICE);
+    private List<Candle> candles = new ArrayList<>(Arrays.asList(new Candle(INITIAL_PRICE, INITIAL_PRICE, INITIAL_PRICE, INITIAL_PRICE)));
     
-    private Integer currentOpen = 500;
+    private Integer currentOpen = INITIAL_PRICE;
 
-    private Integer currentHigh = 500;
+    private Integer currentHigh = INITIAL_PRICE;
 
-    private Integer currentLow = 500;
+    private Integer currentLow = INITIAL_PRICE;
 
-    private Integer currentClose = 500;
+    private Integer currentClose = INITIAL_PRICE;
 
     public StockMarketWorld(final int height, final int length, final CellularAutomatonRule<Action> rule) {
         super(height, length, rule);
         level2 = new StockExchangeLevel2Book();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Cell<Action> createNewCell(final XYCoordinates coordinates, final CellularAutomatonRule<Action> rule) {
         final Random random = new Random();
@@ -52,12 +58,12 @@ public class StockMarketWorld extends SimpleTwoDimensionalGrid<Action> {
      */
     @Override
     public void nextState() {
-        currentOpen = lastCandle.getClose();
+        currentOpen = getLastCandle().getClose();
         currentHigh = currentOpen;
         currentLow = currentOpen;
         currentClose = currentOpen;
         
-        List<MarketParticipant> participants = new ArrayList<MarketParticipant>();
+        List<MarketParticipant> participants = new ArrayList<>();
         
         for (final Cell<Action>[] cellArray : worldGrid) {
             for (final Cell<Action> cell : cellArray) {
@@ -72,19 +78,27 @@ public class StockMarketWorld extends SimpleTwoDimensionalGrid<Action> {
         int i = 0;
         for (MarketParticipant participant : participants) {
             participant.act(useLimitOrders);
-            if (i++ > participants.size() / 3) {
+            if (useLimitOrders && (i++ > participants.size() / 5)) { // 25% participants use limit orders
                 useLimitOrders = false;
             }
         }
         
-        // StockMarketAutomatonRule sets new values
+        candles.add(new Candle(currentOpen, currentHigh, currentLow, currentClose));
+        
+        // CellularAutomatonRule sets new values for next round
         super.nextState();
     }
 
+    /**
+     * @return Last transaction price. For last close use getLastCandle() method.
+     */
     public int getLastPrice() {
         return level2.getLastPrice();
     }
 
+    /**
+     * Places market buy order on the exchange.
+     */
     public void buyMarket(final MarketParticipant buyer, final int numberOfShares) {
         int sharesFilled = 0;
         while (sharesFilled < numberOfShares) {
@@ -110,6 +124,9 @@ public class StockMarketWorld extends SimpleTwoDimensionalGrid<Action> {
         }
     }
 
+    /**
+     * Places market sell order on the exchange.
+     */
     public void sellMarket(final MarketParticipant seller, final int numberOfShares) {
         int sharesFilled = 0;
         while (sharesFilled < numberOfShares) {
@@ -133,6 +150,9 @@ public class StockMarketWorld extends SimpleTwoDimensionalGrid<Action> {
         }
     }
 
+    /**
+     * Places limit buy order on the exchange.
+     */
     public void placeBid(final MarketParticipant buyer, final int numberOfShares, final int price) {
         // decompose order into minimum lot orders for simplicity of filling them in sellMarket() method 
         for (int i = 0; i < numberOfShares / 100; i++) {
@@ -140,6 +160,9 @@ public class StockMarketWorld extends SimpleTwoDimensionalGrid<Action> {
         }
     }
 
+    /**
+     * Places limit sell order on the exchange.
+     */
     public void placeOffer(final MarketParticipant seller, final int numberOfShares, final int price) {
         // decompose order into minimum lot orders for simplicity of filling them in buyMarket() method 
         for (int i = 0; i < numberOfShares / 100; i++) {
@@ -147,9 +170,18 @@ public class StockMarketWorld extends SimpleTwoDimensionalGrid<Action> {
         }
     }
 
+    /**
+     * @return Previous last candle.
+     */
     public Candle getLastCandle() {
-        lastCandle = new Candle(currentOpen, currentHigh, currentLow, currentClose);
-        return lastCandle;
+        return candles.get(candles.size() - 1);
+    }
+    
+    /**
+     * Market candles.
+     */
+    public List<Candle> getCandles() {
+        return candles;
     }
 
     /**

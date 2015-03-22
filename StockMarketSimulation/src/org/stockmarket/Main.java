@@ -9,7 +9,7 @@ public class Main {
 
     public static void main(final String[] args) throws IOException, InterruptedException {
         final WorldGui<Action> gui = new SwingStockMarketGui();
-        final World<Action> world = new StockMarketWorld(20, 20, new StockMarketAutomatonRule());
+        final World<Action> world = new StockMarketWorld(10, 10, new StockMarketAutomatonRule());
         gui.showWorld(world);
         for (int i = 0; i < 100; i++) {
             Thread.sleep(1000);

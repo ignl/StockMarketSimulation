@@ -32,13 +32,13 @@ public class SimpleCell<T> implements Cell<T> {
 	private CellularAutomatonRule<T> rule;
 
 	/** Cell coordinates in a world. For example x and y in 2d grid world. */
-	private Coordinates cellCoordinates;
+	protected Coordinates cellCoordinates;
 
 	/**
 	 * Cell is aware of whole world. {@link CellularAutomatonRule} can retrieve
 	 * Cell neighbors with in World and current cell coordinates.
 	 */
-	private World<T> world;
+	protected World<T> world;
 
 	/**
 	 * Cell constructor. Cell is provided with its initial value, CA rule, its

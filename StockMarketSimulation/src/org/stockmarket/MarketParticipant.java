@@ -80,13 +80,21 @@ public class MarketParticipant extends SimpleCell<Action> {
     public void executeBuy(final int nbOfShares, final int transactionSum) {
         totalCapital -= transactionSum;
         sharesHold += nbOfShares;
-        positionSize += transactionSum; // positionSize positive for buy
+        if (sharesHold == 0) {
+            positionSize = 0;
+        } else {
+            positionSize += transactionSum; // positionSize positive for buy
+        }
     }
     
     public void executeSell(final int nbOfShares, final int transactionSum) {
         totalCapital += transactionSum;
         sharesHold -= nbOfShares;
-        positionSize -= transactionSum; // positionSize negative for sell
+        if (sharesHold == 0) {
+            positionSize = 0;
+        } else {
+            positionSize -= transactionSum; // positionSize negative for sell
+        }
     }
     
 

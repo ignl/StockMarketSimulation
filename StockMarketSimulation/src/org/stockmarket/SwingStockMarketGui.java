@@ -83,7 +83,7 @@ public class SwingStockMarketGui implements WorldGui<Action> {
         final int height = stockMarket.getHeight();
         final int lenght = stockMarket.getLenght();
         cells = new JButton[lenght][height];
-        mainFrame = new JFrame("Java SWING Examples");
+        mainFrame = new JFrame("Stock market simulation");
         mainFrame.setLayout(new GridLayout(2, 1));
         mainFrame.setResizable(true);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
