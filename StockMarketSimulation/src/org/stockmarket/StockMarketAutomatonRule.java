@@ -7,10 +7,7 @@ import org.cellular.twodimensional.XYCoordinates;
 import org.cellular.world.World;
 
 /**
- * If market participant does not have position, then it buys at the market if there are more than 3 bullish neighbors. 
- * If only 1 to 3 bullish neighbors then it uses limit buy order. Same with selling.
- * If he has long position then he will use limit order to exit it if there are more than 5 bearish neighbors. If neighbors are
- * not bearish then it exit position if he has enough profit or too much loss on it. Same goes with short positions.
+ * Stock market automaton rule which sets next {@link Action} for a market participant.
  * 
  * @author Ignas
  *
@@ -40,8 +37,9 @@ public class StockMarketAutomatonRule implements CellularAutomatonRule<Action> {
             int currentPositionValue = marketParticipant.getSharesHold() * marketWorld.getLastCandle().getClose();
             int profitLoss = marketParticipant.getPositionSize() - currentPositionValue;
             double profitLossPrc = (double)(profitLoss * 100)/(double)currentPositionValue;
+            boolean sameCloseTwice = marketWorld.getLastCandle().getClose() == marketWorld.getCandles().get(marketWorld.getCandles().size() - 2).getClose();
             if (marketParticipant.getSharesHold() > 0) {  // if already long
-                if (marketWorld.getLastCandle().getClose() == marketWorld.getCandles().get(marketWorld.getCandles().size() - 2).getClose()) {
+                if (sameCloseTwice) {
                     return Action.SELL; // if closed same twice in a row - exit position
                 } else if (bearishNeighbors >= 4) {
                     return Action.SELL;
@@ -52,7 +50,7 @@ public class StockMarketAutomatonRule implements CellularAutomatonRule<Action> {
                 }
                     
             } else { // if already short
-                if (marketWorld.getLastCandle().getClose() == marketWorld.getCandles().get(marketWorld.getCandles().size() - 2).getClose()) {
+                if (sameCloseTwice) {
                     return Action.BUY; // if closed same twice in a row - exit position
                 } else if (bullishNeighbors >= 4) {
                     return Action.BUY;

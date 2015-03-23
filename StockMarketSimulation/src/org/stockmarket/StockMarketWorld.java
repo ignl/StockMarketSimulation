@@ -78,7 +78,7 @@ public class StockMarketWorld extends SimpleTwoDimensionalGrid<Action> {
         int i = 0;
         for (MarketParticipant participant : participants) {
             participant.act(useLimitOrders);
-            if (useLimitOrders && (i++ > participants.size() / 5)) { // 25% participants use limit orders
+            if (useLimitOrders && (i++ > participants.size() / 5)) { // 20% participants use limit orders
                 useLimitOrders = false;
             }
         }
